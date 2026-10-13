@@ -410,7 +410,7 @@ $("buscar").onclick=async()=>{
   S.neg=[];S.vistos=new Set();limpiarPins();verVista("mapa");S.vivo=false;seguir(d.id,false);historial();toast(`Buscando «${d.sector}» en ${d.ciudad}`);
 };
 $("parar").onclick=()=>S.id&&fetch(`/api/busqueda/${S.id}/parar`).then(()=>toast("Búsqueda parada"));
-$("excel").onclick=()=>{const q=new URLSearchParams({maxResenas:S.fRes?$("maxResenas").value:"",conEmail:S.fEmail?1:0,sinWeb:S.fWeb?1:0});location.href=`/api/busqueda/${S.id}/csv?${q}`;toast("Excel descargado")};
+$("excel").onclick=()=>{if(!S.neg.length)return;const q=new URLSearchParams({maxResenas:S.fRes?$("maxResenas").value:"",conEmail:S.fEmail?1:0,sinWeb:S.fWeb?1:0});location.href=`/api/busqueda/${S.id}/csv?${q}`;toast("Excel descargado")};
 $("fRes").onclick=e=>{if(e.target.tagName==="INPUT")return;S.fRes=!S.fRes;$("fRes").classList.toggle("on",S.fRes);pintar()};
 $("maxResenas").addEventListener("input",()=>{S.fRes=true;$("fRes").classList.add("on");limpiarPins();S.encuadrado=true;pintar()});
 $("fEmail").onclick=()=>{S.fEmail=!S.fEmail;$("fEmail").classList.toggle("on",S.fEmail);pintar()};
@@ -426,9 +426,9 @@ async function historial(){
 }
 $("hist").onclick=e=>{const a=e.target.closest("a");if(!a)return;S.neg=[];S.vistos=new Set();limpiarPins();S.vivo=false;seguir(a.dataset.id,true);historial()};
 
-function seguir(id,encuadrar){S.id=id;S.encuadrado=!encuadrar;clearInterval(S.timer);actualizar();S.timer=setInterval(actualizar,2000)}
+function seguir(id,encuadrar){S.id=id;document.querySelectorAll('#hist a').forEach(a=>a.classList.toggle('on',a.dataset.id===id));S.encuadrado=!encuadrar;clearInterval(S.timer);actualizar();S.timer=setInterval(actualizar,2000)}
 async function actualizar(){
-  const e=await (await fetch(`/api/busqueda/${S.id}`)).json(); if(!e.estado)return;
+  const id=S.id; const e=await (await fetch(`/api/busqueda/${id}`)).json(); if(!e.estado||id!==S.id)return;
   S.neg=e.negocios||[]; const vivo=e.estado==="buscando"; const cambio=vivo!==S.vivo; S.vivo=vivo;
   $("titulo").textContent=`${e.sector} · ${e.ciudad}`;
   $("pill").className="pill "+(vivo?"live":"done");
