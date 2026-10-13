@@ -1,0 +1,10 @@
+{
+  "name": "leads-maps",
+  "version": "1.0.0",
+  "description": "Saca negocios de Google Maps (teléfono, web, email, reseñas) desde una interfaz web local, con mapa en directo y exportación a Excel.",
+  "type": "module",
+  "scripts": { "start": "node server.mjs" },
+  "engines": { "node": ">=20" },
+  "license": "MIT",
+  "author": "Dani Mena"
+}

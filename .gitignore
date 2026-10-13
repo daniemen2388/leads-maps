@@ -1,0 +1,4 @@
+busquedas/
+cache/
+node_modules/
+*.log
